@@ -2,22 +2,65 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreatePostDto {
+  title: String!
+  userId: Int!
+  votes: Int = 0
+}
+
+input CreateUserDto {
+  firstName: String!
+  lastName: String!
+}
+
+type LoginModel {
+  """the access jwt token"""
+  accessToken: String!
+}
+
+input LoginUserInput {
+  password: String!
+  username: String!
+}
+
+type Mutation {
+  createPost(createPostDto: CreatePostDto!): Post!
+  createUser(createUser: CreateUserDto!): User!
+  login(loginInput: LoginUserInput!): LoginModel!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+}
+
 type Post {
   postId: Int!
   title: String!
+  userId: Int!
   votes: Int
 }
 
 type Query {
   user(
-    """it returns a user based on its id"""
+    """returns a user based on its id"""
     userId: Int!
   ): User!
+  users: [User!]!
+}
+
+type Subscription {
+  userCreated: User!
+}
+
+input UpdateUserInput {
+  firstName: String
+  lastName: String
+
+  """the userId to update"""
+  userId: Int!
 }
 
 type User {
   firstName: String
   lastName: String
-  posts: [Post]!
-  userId: Int!
+  posts: [Post!]!
+  userId: ID!
+  username: String
 }

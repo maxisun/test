@@ -10,4 +10,7 @@ export class Post {
 
   @Field(() => Int, { nullable: true })
   votes?: number;
+
+  @Field(() => Int, { nullable: false })
+  userId: number;
 }

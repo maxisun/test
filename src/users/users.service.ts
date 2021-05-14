@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToClass } from 'class-transformer';
 import { FindOneOptions, Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserInput } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { User } from './models/user.model';
 
@@ -26,9 +29,18 @@ export class UsersService {
     return user;
   }
 
-  // public createUser(): User {}
+  public async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const newUser = this.usersRepository.create(createUserDto);
+    return await this.usersRepository.save(newUser);
+  }
 
-  // public updateUser(): User {}
+  public async updateUser(updateUserInput: UpdateUserInput): Promise<User> {
+    const preloadedUser = await this.usersRepository.preload(updateUserInput);
+    if (!preloadedUser) throw new NotFoundException('user not found');
+
+    const persistedUser = await this.usersRepository.save(preloadedUser);
+    return plainToClass(User, persistedUser);
+  }
 
   public async getUserById(userId: number): Promise<User> {
     const user = await this.findOneUserById(userId);
@@ -40,7 +52,9 @@ export class UsersService {
     return user;
   }
 
-  // public getUsers(): User {}
+  public async getAllUsers(): Promise<UserEntity[]> {
+    return this.usersRepository.find();
+  }
 
   // public deleteUser(): User {}
 }

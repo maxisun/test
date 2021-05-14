@@ -7,11 +7,17 @@ export class UserEntity {
   userId: number;
 
   @Column({ nullable: true })
+  username: string;
+
+  @Column({ nullable: true })
+  password: string;
+
+  @Column({ nullable: true })
   firstName?: string;
 
   @Column({ nullable: true })
   lastName?: string;
 
   @OneToMany(() => PostEntity, (postEntity) => postEntity.user)
-  posts: PostEntity[];
+  posts?: PostEntity[];
 }
